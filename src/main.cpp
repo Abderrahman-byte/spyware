@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
+#include <rabbitmq-c/amqp.h>
 
 int main () {
     nlohmann::json data;

@@ -1,3 +1,6 @@
 [submodule "json"]
 	path = json
 	url = https://github.com/nlohmann/json
+[submodule "rabbitmq-c"]
+	path = rabbitmq-c
+	url = https://github.com/alanxz/rabbitmq-c
