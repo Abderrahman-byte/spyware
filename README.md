@@ -12,6 +12,7 @@ Create a spyware that listen to keystrokes and send them to the server.
 - [ ] Authentication
 - [ ] Listen on key strokes
 - [ ] Send them to to messaging queue
+- [ ] Add 100% windows support
 
 ## Authors :
 
