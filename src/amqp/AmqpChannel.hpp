@@ -18,6 +18,8 @@ class AmqpChannel {
         void close ();
 
         std::string declareQueue (std::string, bool = false, bool = false, bool = false, bool = true);
+        void bindQueue (std::string, std::string, std::string);
+        void basicPublish (std::string, std::string, amqp_basic_properties_t *, std::string);
 };
 
 #endif
