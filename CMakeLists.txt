@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project (spware VERSION 0.2)
+project (spyware VERSION 0.2)
 
 add_subdirectory (json)
 

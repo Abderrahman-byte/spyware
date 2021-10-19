@@ -1,4 +1,4 @@
-project (spware)
+project (spyware)
 
 set ( SOURCES 
     main.cpp 
