@@ -8,10 +8,11 @@ Create a spyware that listen to keystrokes and send them to the server.
 
 ## Tasks :
 
-- [ ] Connecte to server
+- [x] Connect to messaging broker
+- [ ] Authentication
 - [ ] Listen on key strokes
-- [ ] Send them to the spyware server
+- [ ] Send them to to messaging queue
 
-## Author :
+## Authors :
 
 [Abderrahmane Elasri](https://github.com/Abderrahman-byte)
