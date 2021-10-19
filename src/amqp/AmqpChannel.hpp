@@ -1,3 +1,5 @@
+#include <string>
+
 #include <rabbitmq-c/amqp.h>
 
 #ifndef _SPYWARE_AMQPCHANNEL_H_
@@ -14,6 +16,8 @@ class AmqpChannel {
         ~AmqpChannel ();
         bool isOpen ();
         void close ();
+
+        std::string declareQueue (std::string, bool = false, bool = false, bool = false, bool = true);
 };
 
 #endif
