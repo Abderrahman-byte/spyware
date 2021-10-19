@@ -11,12 +11,19 @@ AmqpChannel::AmqpChannel (amqp_connection_state_t *connection, amqp_channel_t ch
 
     openReplay = amqp_get_rpc_reply(*connection);
 
-    if (openReplay.reply_type != AMQP_RESPONSE_NORMAL) {
-        throw "Open Channel";
-    }
+    if (openReplay.reply_type != AMQP_RESPONSE_NORMAL) throw "Couldn't Open Channel";
+
+    this->openState = true;
 }
 
-AmqpChannel::~AmqpChannel() {
+AmqpChannel::~AmqpChannel () {
     amqp_channel_close (*this->connection, this->channelId, AMQP_REPLY_SUCCESS);
 }
 
+void AmqpChannel::close () {
+    if (!this->openState) return ;
+
+    amqp_channel_close (*this->connection, this->channelId, AMQP_REPLY_SUCCESS);
+        
+    this->openState = false;
+}
