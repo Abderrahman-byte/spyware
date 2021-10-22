@@ -9,15 +9,7 @@
 #include "amqp/AmqpChannel.hpp"
 
 int main () {
-    std::cout << "getOsName : " << getOsName() << std::endl;
-    std::cout << "Nodename : " << getNodename() << std::endl;
-    std::cout << "Username : " << getUsername() << std::endl;
-    
-    std::vector<std::string> macAddresses = getNetInterfaces();
-
-    for (int i = 0; i < macAddresses.size(); i++) {
-        std::cout << "[" << i << "] " << macAddresses[i] << std::endl;
-    }
+    std::cout << getInfo() << std::endl;
 
     return 0;
 }

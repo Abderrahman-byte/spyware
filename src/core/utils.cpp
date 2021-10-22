@@ -71,7 +71,7 @@ std::vector<std::string> getNetInterfaces () {
 
         tmp = tmp->ifa_next;
     }
-    
+ 
     return addresses;
 }
 
@@ -87,13 +87,12 @@ std::string getHwrAddress(std::string fname) {
     ifr.ifr_ifrn.ifrn_name[if_name_len] = 0;
     
     fd = socket(AF_UNIX, SOCK_DGRAM, 0); // Open socket
-    ioctl(fd, SIOCGIFHWADDR, &ifr); // send if request
+    ioctl(fd, SIOCGIFHWADDR, &ifr); // send if request get hw address
     close(fd); // close socket
 
-
-    // Format the mac address
     const unsigned char* mac = (unsigned char*)ifr.ifr_hwaddr.sa_data;
 
+    // Format the mac address
     for (int i = 0; i < 6; i++) {
         char digit[2];
         sprintf(digit, "%02X", mac[i]);
