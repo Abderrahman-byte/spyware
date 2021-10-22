@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <sys/utsname.h>
 
+#include <nlohmann/json.hpp>
+
 #include "utils.hpp"
 
 // Must add windows support
@@ -78,7 +80,7 @@ std::string getHwrAddress(std::string fname) {
     int fd;
     struct ifreq ifr;
     size_t if_name_len = fname.length(); 
-    char address[6]; 
+    std::string address;
 
     // Copy fname to if request fname
     memcpy(ifr.ifr_ifrn.ifrn_name, fname.c_str(), if_name_len);
@@ -91,8 +93,29 @@ std::string getHwrAddress(std::string fname) {
 
     // Format the mac address
     const unsigned char* mac = (unsigned char*)ifr.ifr_hwaddr.sa_data;
-    sprintf(address, "%02X:%02X:%02X:%02X:%02X:%02X",
-    mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
 
-    return std::string(address);
+    for (int i = 0; i < 6; i++) {
+        char digit[2];
+        sprintf(digit, "%02X", mac[i]);
+
+        address += digit;
+        if (i < 5) address += ":";
+    }
+
+    return address;
+}
+
+nlohmann::json getInfo () {
+    nlohmann::json info;
+    std::vector<std::string> macAddresses = getNetInterfaces();
+
+    info["os_name"] = getOsName();
+    info["nodename"] = getNodename();
+    info["username"] = getUsername();
+    
+    for (int i = 0; i < macAddresses.size(); i++) {
+        info["mac"][i] = macAddresses[i];
+    }
+
+    return info;
 }
