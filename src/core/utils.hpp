@@ -13,4 +13,8 @@ extern std::vector<std::string> getNetInterfaces () ;
 extern std::string getHwrAddress (std::string);
 extern nlohmann::json getInfo ();
 
+#if defined(_WIN32) || defined(_WIN64)
+extern void initWSAStartup () ;
+#endif
+
 #endif

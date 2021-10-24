@@ -7,6 +7,7 @@
 #ifdef _WIN32 ||_WIN64
 // Add windows headers here
 #include <windows.h>
+#include <winsock.h>
 #else
 #include <ifaddrs.h>
 #include <net/if.h>
@@ -58,17 +59,19 @@ std::string getNodename ()  {
 #if defined(_WIN32) || defined(_WIN64)
     // TODO : Add windows support
     char hostname[1024];
-    
+
+    initWSAStartup();
+
     if (gethostname(hostname, 1024) == 0) {
         std::string hostnameStr(hostname);
         return hostnameStr;
     }
-    
-    return "unknown";
+
+    return "unknown_nodename";
 #else 
     struct utsname name;
 
-    if (uname(&name)) return "unknown";
+    if (uname(&name)) return "unknown_nodename";
 
     return std::string(name.nodename);
 #endif
@@ -161,3 +164,17 @@ nlohmann::json getInfo () {
 
     return info;
 }
+
+#if defined(_WIN64) || defined(_WIN32) 
+void initWSAStartup () {
+    static bool initialized = false;
+    WORD wVersionRequested;
+    WSADATA wsaData;
+
+    if (initialized) return ;
+
+    wVersionRequested = MAKEWORD(2, 2);
+
+    if (WSAStartup(wVersionRequested, &wsaData) == 0) initialized = true;
+}
+#endif
