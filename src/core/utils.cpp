@@ -8,6 +8,7 @@
 // Add windows headers here
 #include <windows.h>
 #include <winsock.h>
+#include <lmcons.h>
 #else
 #include <ifaddrs.h>
 #include <net/if.h>
@@ -57,7 +58,6 @@ std::string getOsName () {
 
 std::string getNodename ()  {
 #if defined(_WIN32) || defined(_WIN64)
-    // TODO : Add windows support
     char hostname[1024];
 
     initWSAStartup();
@@ -80,7 +80,12 @@ std::string getNodename ()  {
 std::string getUsername () {
 #if defined(_WIN32) || defined(_WIN64)
     // TODO : Add windows support
-    return "unknown_username";
+    char username[UNLEN + 1];
+    DWORD usernameLength = UNLEN + 1;
+
+    GetUserName(username, &usernameLength);
+
+    return std::string(username);
 #else 
     char buffer[1024];
     size_t bufferSize = 1024;
