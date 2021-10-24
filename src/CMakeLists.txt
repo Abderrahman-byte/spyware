@@ -5,6 +5,7 @@ set ( SOURCES
     amqp/AmqpConnection.cpp 
     amqp/AmqpChannel.cpp
     core/utils.cpp
+    core/authentication.cpp
 )
 
 add_executable (${PROJECT_NAME} ${SOURCES})
