@@ -6,7 +6,6 @@
 
 #ifdef _WIN32 ||_WIN64
 // Add windows headers here
-// #include <sysinfoapi.h>
 #include <windows.h>
 #else
 #include <ifaddrs.h>
@@ -58,6 +57,13 @@ std::string getOsName () {
 std::string getNodename ()  {
 #if defined(_WIN32) || defined(_WIN64)
     // TODO : Add windows support
+    char hostname[1024];
+    
+    if (gethostname(hostname, 1024) == 0) {
+        std::string hostnameStr(hostname);
+        return hostnameStr;
+    }
+    
     return "unknown";
 #else 
     struct utsname name;
