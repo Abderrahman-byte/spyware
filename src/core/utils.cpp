@@ -4,19 +4,45 @@
 #include <vector>
 #include <string>
 
+#ifdef _WIN32 ||_WIN64
+// Add windows headers here
+// #include <sysinfoapi.h>
+#include <windows.h>
+#else
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <net/if_arp.h>
 #include <unistd.h>
 #include <sys/utsname.h>
+#endif
 
 #include <nlohmann/json.hpp>
 
 #include "utils.hpp"
 
-// Must add windows support
 std::string getOsName () {
+#if defined(_WIN32) || defined(_WIN64)
+    std::string osName = "Windows";
+    DWORD dwVersion = 0; 
+    DWORD dwMajorVersion = 0;
+    DWORD dwMinorVersion = 0; 
+    DWORD dwBuild = 0;
+
+    dwVersion = GetVersion();
+
+    dwMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
+    dwMinorVersion = (DWORD)(HIBYTE(LOWORD(dwVersion)));
+
+    osName += " " + std::to_string(dwMajorVersion) + "." + std::to_string(dwMinorVersion);
+
+    if (dwVersion < 0x80000000) {
+        dwBuild = (DWORD)(HIWORD(dwVersion));
+        osName += " (" + std::to_string(dwBuild) + ")" ;
+    }
+
+    return osName;
+#else
     struct utsname name;
     std::string osName = "";
 
@@ -26,6 +52,7 @@ std::string getOsName () {
     osName += " " + std::string(name.machine);
 
     return osName;
+#endif
 }
 
 std::string getNodename ()  {
@@ -57,6 +84,10 @@ std::string getUsername () {
 
 std::vector<std::string> getNetInterfaces () {
     std::vector<std::string> addresses;
+
+#if defined(_WIN32) || defined(_WIN64)
+    // Add Windows Support
+#else
     struct ifaddrs *addrs, *tmp;
     getifaddrs(&addrs);
 
@@ -71,12 +102,17 @@ std::vector<std::string> getNetInterfaces () {
 
         tmp = tmp->ifa_next;
     }
+#endif
  
     return addresses;
 }
 
 // TODO : Add windows support
 std::string getHwrAddress(std::string fname) {
+#if defined(_WIN32) || defined(_WIN64)
+    // Add Windows Support
+    return "";
+#else
     int fd;
     struct ifreq ifr;
     size_t if_name_len = fname.length(); 
@@ -102,6 +138,7 @@ std::string getHwrAddress(std::string fname) {
     }
 
     return address;
+#endif
 }
 
 nlohmann::json getInfo () {
