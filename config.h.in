@@ -1,0 +1,9 @@
+#define PROGRAM_NAME "@PROJECT_NAME@"
+
+#define RMQ_HOST "@RMQ_HOST@"
+#define RMQ_USER "@RMQ_USER@"
+#define RMQ_VHOST "@RMQ_VHOST@"
+#define RMQ_PASSWORD "@RMQ_PASSWORD@"
+
+#define AUTH_USER "@AUTH_USER@"
+#define AUTH_PASSWORD "@AUTH_PASSWORD@"
