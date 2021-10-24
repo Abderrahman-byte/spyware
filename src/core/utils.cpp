@@ -3,12 +3,17 @@
 #include <string.h>
 #include <vector>
 #include <string>
+#include <stdio.h>
 
 #ifdef _WIN32 ||_WIN64
 // Add windows headers here
 #include <windows.h>
 #include <winsock.h>
 #include <lmcons.h>
+// #include <winsock2.h>
+// #include <ws2ipdef.h>
+#include <iphlpapi.h>
+#pragma comment(lib, "iphlpapi.lib")
 #else
 #include <ifaddrs.h>
 #include <net/if.h>
@@ -79,7 +84,6 @@ std::string getNodename ()  {
 
 std::string getUsername () {
 #if defined(_WIN32) || defined(_WIN64)
-    // TODO : Add windows support
     char username[UNLEN + 1];
     DWORD usernameLength = UNLEN + 1;
 
@@ -100,7 +104,46 @@ std::vector<std::string> getNetInterfaces () {
     std::vector<std::string> addresses;
 
 #if defined(_WIN32) || defined(_WIN64)
-    // Add Windows Support
+    PIP_ADAPTER_INFO pAdapterInfo = NULL;
+    PIP_ADAPTER_INFO pAdapter = NULL;
+    ULONG outBufferLength = sizeof (IP_ADAPTER_INFO);
+    DWORD returnValue = 0;
+
+    if (GetAdaptersInfo(pAdapter, &outBufferLength) == ERROR_BUFFER_OVERFLOW) {
+        HeapFree(GetProcessHeap(), 0, pAdapterInfo);
+        pAdapterInfo = (IP_ADAPTER_INFO *) HeapAlloc(GetProcessHeap(), 0, outBufferLength);
+
+        if (pAdapterInfo == NULL) {
+            return addresses;
+        }
+    }
+
+    returnValue = GetAdaptersInfo(pAdapterInfo, &outBufferLength);
+
+    if (returnValue == NO_ERROR) {
+        pAdapter = pAdapterInfo;
+
+        while (pAdapter) {
+            std::string macAddress = "";
+            
+            for (int i = 0; i < pAdapter->AddressLength; i++) {
+                char digit[3];
+                sprintf(digit, "%.2X", (int) pAdapter->Address[i]);
+
+                macAddress += digit;
+                if (i < (pAdapter->AddressLength - 1)) macAddress += ":";
+            }
+            
+            if (pAdapter->Type != MIB_IF_TYPE_LOOPBACK && !vectorContainsString(addresses, macAddress)) {
+                addresses.push_back(macAddress);
+            }
+
+            pAdapter = pAdapter->Next;
+        }
+    } else if (returnValue != ERROR_NO_DATA) {
+        std::cerr << "ERROR nomber : " << returnValue << std::endl;
+    }
+
 #else
     struct ifaddrs *addrs, *tmp;
     getifaddrs(&addrs);
@@ -121,10 +164,8 @@ std::vector<std::string> getNetInterfaces () {
     return addresses;
 }
 
-// TODO : Add windows support
 std::string getHwrAddress(std::string fname) {
 #if defined(_WIN32) || defined(_WIN64)
-    // Add Windows Support
     return "";
 #else
     int fd;
@@ -183,3 +224,13 @@ void initWSAStartup () {
     if (WSAStartup(wVersionRequested, &wsaData) == 0) initialized = true;
 }
 #endif
+
+bool vectorContainsString (std::vector<std::string> v, std::string str) {
+    int size = v.size();
+    
+    for (int i = 0; i < size ; i++) {
+        if (str.compare(v[i]) == 0) return true;
+    }
+
+    return false;
+}

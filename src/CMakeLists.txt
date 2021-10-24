@@ -11,5 +11,5 @@ add_executable (${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries (${PROJECT_NAME} 
     nlohmann_json::nlohmann_json
-    rabbitmq::rabbitmq
+    rabbitmq::rabbitmq-static
 )
