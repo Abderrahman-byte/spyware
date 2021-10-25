@@ -1,3 +1,6 @@
+#include <string>
+#include <iostream>
+
 #include <rabbitmq-c/amqp.h>
 #include <rabbitmq-c/tcp_socket.h>
 #include <nlohmann/json.hpp>
@@ -112,14 +115,17 @@ bool AmqpClient::bindQueue (std::string queue, std::string exchange, std::string
 }
 
 bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, std::string body, amqp_basic_properties_t* props) {
-    amqp_bytes_t exchangeBytes = amqp_cstring_bytes(exchange.c_str());
-    amqp_bytes_t routingKeyBytes = amqp_cstring_bytes(routingKey.c_str());
+    amqp_bytes_t exchangeBytes = amqp_empty_bytes;
+    amqp_bytes_t routingKeyBytes = amqp_empty_bytes;
     amqp_bytes_t bodyBytes = amqp_cstring_bytes(body.c_str());
 
-    int err = amqp_basic_publish(this->connection, 1, exchangeBytes, routingKeyBytes, 0, 0, props, bodyBytes);
+    if (exchange.length() > 0) exchangeBytes = amqp_cstring_bytes(exchange.c_str());
+    if (routingKey.length() > 0) routingKeyBytes = amqp_cstring_bytes(routingKey.c_str());
 
-    if (err < 0) {
-        debug("Binding publish message to " + exchange, ERROR);
+    int status = amqp_basic_publish(this->connection, 1, exchangeBytes, routingKeyBytes, 0, 0, props, bodyBytes);
+
+    if (status < 0) {
+        debug("Publishing message to " + exchange, ERROR);
         return false;
     }
 
