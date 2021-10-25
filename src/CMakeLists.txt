@@ -2,9 +2,11 @@ project (spyware)
 
 set ( SOURCES 
     main.cpp 
-    amqp/AmqpConnection.cpp 
-    amqp/AmqpChannel.cpp
+    # amqp/AmqpConnection.cpp 
+    # amqp/AmqpChannel.cpp
+    amqp/AmqpClient.cpp
     core/utils.cpp
+    core/debug.cpp
     core/authentication.cpp
 )
 
