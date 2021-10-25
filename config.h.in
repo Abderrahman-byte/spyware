@@ -1,5 +1,7 @@
 #define PROGRAM_NAME "@PROJECT_NAME@"
 
+#define DEBUG_MODE @DEBUG@
+
 #define RMQ_HOST "@RMQ_HOST@"
 #define RMQ_USER "@RMQ_USER@"
 #define RMQ_VHOST "@RMQ_VHOST@"
