@@ -27,6 +27,10 @@ if (NOT DEFINED AUTH_PASSWORD)
     message (FATAL_ERROR "AUTH_PASSWORD Variable is missing")
 endif()
 
+if (NOT DEFINED DEBUG) 
+    set (DEBUG 0)
+endif()
+
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/config.h.in config.h)
 
 add_subdirectory (json)
