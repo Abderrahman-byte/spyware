@@ -1,11 +1,19 @@
 #include <iostream>
 #include <string>
 
-#include "config.h"
-
 #include <nlohmann/json.hpp>
-#include <rabbitmq-c/amqp.h>
+
+#include "config.h"
+#include "core/utils.hpp"
+
+#include "amqp/AmqpClient.hpp"
 
 int main () {
+    AmqpClient amqpClient (getRmqConfig());
+    amqpClient.open();
+
+
+    while (true) {}
+
     return 0;
 }
