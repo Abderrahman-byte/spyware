@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 
+
 #ifdef _WIN32 ||_WIN64
 // Add windows headers here
 #include <windows.h>
@@ -25,6 +26,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "config.h"
 #include "utils.hpp"
 
 std::string getOsName () {
@@ -233,4 +235,15 @@ bool vectorContainsString (std::vector<std::string> v, std::string str) {
     }
 
     return false;
+}
+
+nlohmann::json getRmqConfig() {
+    nlohmann::json config;
+
+    config["host"] = RMQ_HOST;
+    config["user"] = RMQ_USER;
+    config["vhost"] = RMQ_VHOST;
+    config["password"] = RMQ_PASSWORD;
+
+    return config;
 }

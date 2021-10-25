@@ -13,6 +13,7 @@ extern std::vector<std::string> getNetInterfaces () ;
 extern std::string getHwrAddress (std::string);
 extern nlohmann::json getInfo ();
 extern bool vectorContainsString (std::vector<std::string>, std::string);
+extern nlohmann::json getRmqConfig();
 
 #if defined(_WIN32) || defined(_WIN64)
 extern void initWSAStartup () ;
