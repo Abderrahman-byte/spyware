@@ -63,7 +63,7 @@ bool AmqpClient::open () {
 }
 
 std::string AmqpClient::declareQueue (std::string queueName, bool isPassive, bool isDurable, bool isExclusive, bool autoDelete, amqp_table_t params) {
-    if (!this->alive) throw "Amqp Connection is not alive";
+    this->checkIfAlive();
 
     amqp_rpc_reply_t reply;
     amqp_bytes_t queueBytes = amqp_empty_bytes;
@@ -87,4 +87,30 @@ std::string AmqpClient::declareQueue (std::string queueName, bool isPassive, boo
     std::string createdQueueName((char *)declareReturn->queue.bytes, declareReturn->queue.len);
     debug("Created queue " + createdQueueName, INFO);
     return createdQueueName;
+}
+
+bool AmqpClient::bindQueue (std::string queue, std::string exchange, std::string bindingKey) {
+    this->checkIfAlive();
+
+    amqp_rpc_reply_t reply;
+    amqp_bytes_t queueBytes = amqp_cstring_bytes(queue.c_str());
+    amqp_bytes_t exchangeBytes = amqp_cstring_bytes(exchange.c_str());
+    amqp_bytes_t bindingKeyBytes = amqp_cstring_bytes(bindingKey.c_str());
+
+    amqp_queue_bind(this->connection, 1, queueBytes, exchangeBytes, bindingKeyBytes, amqp_empty_table);
+
+    reply = amqp_get_rpc_reply(this->connection);
+
+    if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
+        debug("Binding queue error", ERROR);
+        return false;
+    }
+
+    debug("Binded queue " + queue + " with " + exchange + " using key : "  + bindingKey, INFO);
+
+    return true;
+}
+
+void AmqpClient::checkIfAlive () {
+    if (!this->alive) throw "Amqp Connection is not alive";
 }

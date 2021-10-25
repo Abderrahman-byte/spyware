@@ -22,7 +22,10 @@ class AmqpClient {
         // ~AmqpClient ();
         bool open ();
         std::string declareQueue (std::string, bool = false, bool = false, bool = false, bool = false, amqp_table_t = amqp_empty_table);
-        bool bindQueue ();
+        bool bindQueue (std::string, std::string, std::string);
+
+    private :
+        void checkIfAlive ();
 };
 
 #endif
