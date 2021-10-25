@@ -8,11 +8,12 @@ Create a spyware that listen to keystrokes and send them to the server.
 
 ## Tasks :
 
-- [x] Connect to messaging broker
+- [x] Collect target machine info
+- [x] Open Amqp connection
 - [ ] Authentication
-- [ ] Listen on key strokes
-- [ ] Send them to to messaging queue
-- [ ] Add 100% windows support
+- [ ] Listen on key strokes and send them to broker
+- [ ] Send Location
+- [ ] Add spyware as service
 
 ## Authors :
 
