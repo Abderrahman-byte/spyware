@@ -4,6 +4,7 @@ set ( SOURCES
     main.cpp 
     # amqp/AmqpConnection.cpp 
     # amqp/AmqpChannel.cpp
+    core/spyware.cpp
     amqp/AmqpClient.cpp
     core/utils.cpp
     core/debug.cpp
