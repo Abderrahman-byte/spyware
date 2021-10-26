@@ -84,7 +84,7 @@ std::string AmqpClient::declareQueue (std::string queueName, bool isPassive, boo
 
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
         debug("Declare queue error", ERROR);
-        return nullptr;
+        return "";
     }
 
     std::string createdQueueName((char *)declareReturn->queue.bytes, declareReturn->queue.len);
@@ -134,4 +134,14 @@ bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, std
 
 void AmqpClient::checkIfAlive () {
     if (!this->alive) throw "Amqp Connection is not alive";
+}
+
+void AmqpClient::basicConsume (std::string queue) {
+    amqp_bytes_t queueName = amqp_cstring_bytes(queue.c_str());
+
+    amqp_basic_consume(this->connection, 1, queueName, amqp_empty_bytes, 0, 0, 0, amqp_empty_table);
+}
+
+amqp_rpc_reply_t AmqpClient::consumeMessage (amqp_envelope_t * envelope, int flags) {
+    return amqp_consume_message(this->connection, envelope, NULL, flags);
 }
