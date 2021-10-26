@@ -29,7 +29,7 @@ bool AmqpClient::open () {
     this->socket = amqp_tcp_socket_new(this->connection);
 
     if (!this->socket) {
-        debug("amqp new socket", ERROR);
+        debug("amqp new socket", LEVEL_ERROR);
         return false;
     }
 
@@ -37,7 +37,7 @@ bool AmqpClient::open () {
     status = amqp_socket_open(this->socket, this->host.c_str(), this->port);
 
     if (status) {
-        debug("amqp open socket", ERROR);
+        debug("amqp open socket", LEVEL_ERROR);
         return false;
     }
 
@@ -46,7 +46,7 @@ bool AmqpClient::open () {
         this->user.c_str(), this->password.c_str());
 
     if (reply.reply_type == AMQP_RESPONSE_SERVER_EXCEPTION) {
-        debug("amqp login error", ERROR);
+        debug("amqp login error", LEVEL_ERROR);
         return false;
     }
 
@@ -55,11 +55,11 @@ bool AmqpClient::open () {
 
     // Check if channel is open
     if (reply.reply_type == AMQP_RESPONSE_SERVER_EXCEPTION) {
-        debug("AmqpClient::open amqp open channel error", ERROR);
+        debug("AmqpClient::open amqp open channel error", LEVEL_ERROR);
         return false;
     }
 
-    debug("Amqp Connection is open and ready", INFO);
+    debug("Amqp Connection is open and ready", LEVEL_INFO);
     this->alive = true;
 
     return true;
@@ -83,12 +83,12 @@ std::string AmqpClient::declareQueue (std::string queueName, bool isPassive, boo
     reply = amqp_get_rpc_reply(this->connection);
 
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
-        debug("Declare queue error", ERROR);
+        debug("Declare queue error", LEVEL_ERROR);
         return "";
     }
 
     std::string createdQueueName((char *)declareReturn->queue.bytes, declareReturn->queue.len);
-    debug("Created queue " + createdQueueName, INFO);
+    debug("Created queue " + createdQueueName, LEVEL_INFO);
     return createdQueueName;
 }
 
@@ -105,11 +105,11 @@ bool AmqpClient::bindQueue (std::string queue, std::string exchange, std::string
     reply = amqp_get_rpc_reply(this->connection);
 
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
-        debug("Binding queue error", ERROR);
+        debug("Binding queue error", LEVEL_ERROR);
         return false;
     }
 
-    debug("Binded queue " + queue + " with " + exchange + " using key : "  + bindingKey, INFO);
+    debug("Binded queue " + queue + " with " + exchange + " using key : "  + bindingKey, LEVEL_INFO);
 
     return true;
 }
@@ -125,7 +125,7 @@ bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, std
     int status = amqp_basic_publish(this->connection, 1, exchangeBytes, routingKeyBytes, 0, 0, props, bodyBytes);
 
     if (status < 0) {
-        debug("Publishing message to " + exchange, ERROR);
+        debug("Publishing message to " + exchange, LEVEL_ERROR);
         return false;
     }
 

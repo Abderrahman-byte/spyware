@@ -4,13 +4,13 @@
 #define _SPYWARE_DEBUG_HPP_ 1
 
 typedef enum debug_level {
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    CRITICAL,
+    LEVEL_DEBUG,
+    LEVEL_INFO,
+    LEVEL_WARN,
+    LEVEL_ERROR,
+    LEVEL_CRITICAL,
 } debug_level_t ;
 
-extern void debug (std::string, debug_level_t = DEBUG);
+extern void debug (std::string, debug_level_t = LEVEL_DEBUG);
 
 #endif

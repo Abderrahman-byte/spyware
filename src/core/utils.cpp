@@ -7,12 +7,9 @@
 
 
 #ifdef _WIN32 ||_WIN64
-// Add windows headers here
 #include <windows.h>
 #include <winsock.h>
 #include <lmcons.h>
-// #include <winsock2.h>
-// #include <ws2ipdef.h>
 #include <iphlpapi.h>
 #pragma comment(lib, "iphlpapi.lib")
 #else

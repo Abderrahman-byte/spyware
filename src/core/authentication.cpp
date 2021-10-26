@@ -1,4 +1,3 @@
-#include <string>
 #include <iostream>
 #include <exception>
 
@@ -38,7 +37,7 @@ std::string authenticate(AmqpClient &amqpClient, std::string username, std::stri
     amqp_bytes_free(props.reply_to);
 
     if (publishStatus < 0) {
-        debug("Authentication publish credentials and info", ERROR);
+        debug("Authentication publish credentials and info", LEVEL_ERROR);
         return "";
     }
 
@@ -49,10 +48,10 @@ std::string authenticate(AmqpClient &amqpClient, std::string username, std::stri
     try {
         payload = nlohmann::json::parse(authResponse);
     } catch (std::exception ex) {
-        debug("Cannot parse json auth response " + std::string(ex.what()), ERROR);
+        debug("Cannot parse json auth response " + std::string(ex.what()), LEVEL_ERROR);
         return "";
     } catch (const char *ex) {
-        debug("Cannot parse json auth response " + std::string(ex), ERROR);
+        debug("Cannot parse json auth response " + std::string(ex), LEVEL_ERROR);
         return "";
     }
 
@@ -60,7 +59,7 @@ std::string authenticate(AmqpClient &amqpClient, std::string username, std::stri
         std::string errorTitle = payload["error"];
         debug("Received error : " + errorTitle);
     } else if (payload["token"] != nullptr) {
-        debug("Authenticated successfully", INFO);
+        debug("Authenticated successfully", LEVEL_INFO);
         return payload["token"];
     } else {
         debug("No token was received");
@@ -79,7 +78,7 @@ std::string getRpcAuthenticationReply (AmqpClient &amqpClient, std::string queue
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
         // TODO : Handle non normal response
 
-        debug("Received non Normal response", WARN);
+        debug("Received non Normal response", LEVEL_WARN);
     } else {
         std::string body((char *)envelope.message.body.bytes, envelope.message.body.len);
 

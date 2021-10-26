@@ -1,3 +1,5 @@
+#ifndef _SPYWARE_CONFIG_H_
+#define _SPYWARE_CONFIG_H_ 1
 #define PROGRAM_NAME "@PROJECT_NAME@"
 
 #define DEBUG_MODE @DEBUG@
@@ -9,3 +11,4 @@
 
 #define AUTH_USER "@AUTH_USER@"
 #define AUTH_PASSWORD "@AUTH_PASSWORD@"
+#endif

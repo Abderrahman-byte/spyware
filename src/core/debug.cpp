@@ -6,19 +6,19 @@
 
 std::string getLevelName (debug_level_t level) {
     switch (level) {
-        case DEBUG :
+        case LEVEL_DEBUG :
             return "DEBUG";
         
-        case INFO :
+        case LEVEL_INFO :
             return "INFO";
 
-        case WARN :
+        case LEVEL_WARN :
             return "WARN";
 
-        case ERROR :
+        case LEVEL_ERROR :
             return "ERROR";
         
-        case CRITICAL :
+        case LEVEL_CRITICAL :
             return "CRITICAL";
         
         default :
