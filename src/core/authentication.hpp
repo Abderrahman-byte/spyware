@@ -4,5 +4,6 @@
 #define _SPYWARE_AUTHENTICATION_HPP_ 1
 
 extern std::string authenticate(AmqpClient &, std::string, std::string);
+extern std::string getRpcAuthenticationReply (AmqpClient &, std::string);
 
 #endif
