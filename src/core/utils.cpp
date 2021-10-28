@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
+#include <chrono>
 
 
 #ifdef _WIN32 ||_WIN64
@@ -243,4 +244,12 @@ nlohmann::json getRmqConfig() {
     config["password"] = RMQ_PASSWORD;
 
     return config;
+}
+
+unsigned long long getTimestamp () {
+    const auto now = std::chrono::system_clock::now();
+    const auto nowAsTimeT = std::chrono::system_clock::to_time_t(now);
+    const auto nowMs = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+
+    return nowMs.count();
 }
