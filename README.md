@@ -11,9 +11,9 @@ Create a spyware that listen to keystrokes and send them to the server.
 - [x] Collect target machine info
 - [x] Open Amqp connection
 - [x] Authentication
-- [ ] Add Keylogger
+- [x] Add Keylogger
+- [x] Add spyware as service
 - [ ] Add screen shot
-- [ ] Add spyware as service
 - [ ] Add Multi channel support for amqp client
 - [ ] Add Multi Threading
 - [ ] Geo location traker

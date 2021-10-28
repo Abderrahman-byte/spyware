@@ -3,3 +3,4 @@ build
 .vs
 out
 *Settings.json
+build-p.ps1
