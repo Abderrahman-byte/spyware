@@ -1,6 +1,7 @@
 #ifndef _SPYWARE_CONFIG_H_
 #define _SPYWARE_CONFIG_H_ 1
 #define PROGRAM_NAME "@PROJECT_NAME@"
+#define VERSION "@VERSION@"
 
 #define DEBUG_MODE @DEBUG@
 

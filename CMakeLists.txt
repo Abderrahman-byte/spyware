@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 
-project (spyware VERSION 0.2)
+project (spyware VERSION 0.9)
+
+set(VERSION "0.9")
 
 # Check variables
 if (NOT DEFINED RMQ_HOST) 
