@@ -14,7 +14,18 @@ set ( SOURCES
 
 add_executable (${PROJECT_NAME} ${SOURCES})
 
+
 target_link_libraries (${PROJECT_NAME} 
     nlohmann_json::nlohmann_json
     rabbitmq::rabbitmq-static
 )
+
+
+if (MSVC)
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.exe.manifest\" -outputresource:"$<TARGET_FILE:${PROJECT_NAME}>"\;1
+        COMMENT "Adding manifest..." 
+    )
+endif(MSVC)
