@@ -154,3 +154,14 @@ void AmqpClient::deleteQueue (std::string queue) {
     amqp_bytes_t queueBytes = amqp_cstring_bytes(queue.c_str());
     amqp_queue_delete(this->connection, 1, queueBytes, 0, 0);
 }
+
+void AmqpClient::close () {
+    amqp_channel_close(this->connection, 1, AMQP_REPLY_SUCCESS);
+    amqp_connection_close(this->connection, AMQP_REPLY_SUCCESS);
+    amqp_destroy_connection(this->connection);
+    this->alive = false;
+}
+
+AmqpClient::~AmqpClient () {
+    this->close();
+}

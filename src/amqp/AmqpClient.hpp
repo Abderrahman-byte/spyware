@@ -19,10 +19,10 @@ class AmqpClient {
 
     public :
         AmqpClient (nlohmann::json);
-        // ~AmqpClient (); // TODO : add deconstructor
+        ~AmqpClient ();
         
         bool open ();
-        // close (); // TODO : add close channel and connection method
+        void close ();
         std::string declareQueue (std::string, bool = false, bool = false, bool = false, bool = false, amqp_table_t = amqp_empty_table);
         bool bindQueue (std::string, std::string, std::string);
         bool basicPublish (std::string, std::string, std::string, amqp_basic_properties_t* = NULL);
