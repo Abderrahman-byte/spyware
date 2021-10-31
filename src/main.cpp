@@ -1,7 +1,7 @@
 #include <iostream>
-#include "core/spyware.hpp"
 
 #include "config.h"
+#include "core/spyware.hpp"
 
 int main (int argc, char *argv[]) {
     std::string exePath (argv[0]);
