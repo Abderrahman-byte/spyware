@@ -76,7 +76,6 @@ std::string getRpcAuthenticationReply (AmqpClient &amqpClient, std::string queue
     amqpClient.basicConsume(queue);
     reply = amqpClient.consumeMessage(&envelope);
 
-    // TODO : Destroy envelope
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
         // TODO : Handle non normal response
 
@@ -85,8 +84,11 @@ std::string getRpcAuthenticationReply (AmqpClient &amqpClient, std::string queue
         std::string body((char *)envelope.message.body.bytes, envelope.message.body.len);
         amqpClient.basicAck(envelope.delivery_tag);
 
+        amqp_destroy_envelope(&envelope);
         return body;
     }
+
+    amqp_destroy_envelope(&envelope);
 
     return "";
 }
