@@ -1,5 +1,7 @@
 #include <string>
 #include <iostream>
+#include <mutex>
+
 
 #include <rabbitmq-c/amqp.h>
 #include <rabbitmq-c/tcp_socket.h>
@@ -22,6 +24,7 @@ AmqpClient::AmqpClient (nlohmann::json config) {
 
 /* Open Amqp connection and a channel [Single channel client] */
 bool AmqpClient::open () {
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
     int status;
     amqp_rpc_reply_t reply;
 
@@ -79,6 +82,8 @@ std::string AmqpClient::declareQueue (std::string queueName, bool isPassive, boo
 
     if (queueName.length() > 0) queueBytes = amqp_cstring_bytes(queueName.c_str());
 
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+
     declareReturn = amqp_queue_declare(this->connection, 1, queueBytes, passive, durable, exclusive, auto_delete, params);
     reply = amqp_get_rpc_reply(this->connection);
 
@@ -99,6 +104,7 @@ bool AmqpClient::bindQueue (std::string queue, std::string exchange, std::string
     amqp_bytes_t queueBytes = amqp_cstring_bytes(queue.c_str());
     amqp_bytes_t exchangeBytes = amqp_cstring_bytes(exchange.c_str());
     amqp_bytes_t bindingKeyBytes = amqp_cstring_bytes(bindingKey.c_str());
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
 
     amqp_queue_bind(this->connection, 1, queueBytes, exchangeBytes, bindingKeyBytes, amqp_empty_table);
 
@@ -115,12 +121,16 @@ bool AmqpClient::bindQueue (std::string queue, std::string exchange, std::string
 }
 
 bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, std::string body, amqp_basic_properties_t* props) {
+    this->checkIfAlive();
+
     amqp_bytes_t exchangeBytes = amqp_empty_bytes;
     amqp_bytes_t routingKeyBytes = amqp_empty_bytes;
     amqp_bytes_t bodyBytes = amqp_cstring_bytes(body.c_str());
 
     if (exchange.length() > 0) exchangeBytes = amqp_cstring_bytes(exchange.c_str());
     if (routingKey.length() > 0) routingKeyBytes = amqp_cstring_bytes(routingKey.c_str());
+
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
 
     int status = amqp_basic_publish(this->connection, 1, exchangeBytes, routingKeyBytes, 0, 0, props, bodyBytes);
 
@@ -138,24 +148,38 @@ void AmqpClient::checkIfAlive () {
 
 void AmqpClient::basicConsume (std::string queue) {
     amqp_bytes_t queueName = amqp_cstring_bytes(queue.c_str());
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+    
+    this->checkIfAlive();
 
     amqp_basic_consume(this->connection, 1, queueName, amqp_empty_bytes, 0, 0, 0, amqp_empty_table);
 }
 
 amqp_rpc_reply_t AmqpClient::consumeMessage (amqp_envelope_t * envelope, int flags) {
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+
+    this->checkIfAlive();
+
     return amqp_consume_message(this->connection, envelope, NULL, flags);
 }
 
 void AmqpClient::basicAck (uint64_t deliveryTag) {
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
     amqp_basic_ack(this->connection, 1, deliveryTag , 0);
 }
 
 void AmqpClient::deleteQueue (std::string queue) {
     amqp_bytes_t queueBytes = amqp_cstring_bytes(queue.c_str());
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+
+    this->checkIfAlive();
+
     amqp_queue_delete(this->connection, 1, queueBytes, 0, 0);
 }
 
 void AmqpClient::close () {
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+
     amqp_channel_close(this->connection, 1, AMQP_REPLY_SUCCESS);
     amqp_connection_close(this->connection, AMQP_REPLY_SUCCESS);
     amqp_destroy_connection(this->connection);

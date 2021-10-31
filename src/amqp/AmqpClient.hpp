@@ -1,4 +1,5 @@
 #include <string>
+#include <mutex>
 
 #include <rabbitmq-c/amqp.h>
 #include <nlohmann/json.hpp>
@@ -16,6 +17,8 @@ class AmqpClient {
         std::string password = "guest";
         int port = 5672;
         bool alive = false;
+
+        std::mutex mtx;
 
     public :
         AmqpClient (nlohmann::json);
