@@ -42,6 +42,7 @@ std::string authenticate(AmqpClient &amqpClient, std::string username, std::stri
     }
 
     authResponse = getRpcAuthenticationReply(amqpClient, queue);
+    amqpClient.deleteQueue(queue);
 
     if (authResponse.length() <= 0) return "";
 

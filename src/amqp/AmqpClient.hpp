@@ -28,8 +28,8 @@ class AmqpClient {
         bool basicPublish (std::string, std::string, std::string, amqp_basic_properties_t* = NULL);
         void basicConsume (std::string);
         amqp_rpc_reply_t consumeMessage (amqp_envelope_t *, int = 0);
-
         void basicAck(uint64_t);
+        void deleteQueue (std::string);
 
     private :
         void checkIfAlive ();

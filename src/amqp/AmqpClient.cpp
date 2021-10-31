@@ -149,3 +149,8 @@ amqp_rpc_reply_t AmqpClient::consumeMessage (amqp_envelope_t * envelope, int fla
 void AmqpClient::basicAck (uint64_t deliveryTag) {
     amqp_basic_ack(this->connection, 1, deliveryTag , 0);
 }
+
+void AmqpClient::deleteQueue (std::string queue) {
+    amqp_bytes_t queueBytes = amqp_cstring_bytes(queue.c_str());
+    amqp_queue_delete(this->connection, 1, queueBytes, 0, 0);
+}
