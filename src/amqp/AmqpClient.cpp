@@ -145,3 +145,7 @@ void AmqpClient::basicConsume (std::string queue) {
 amqp_rpc_reply_t AmqpClient::consumeMessage (amqp_envelope_t * envelope, int flags) {
     return amqp_consume_message(this->connection, envelope, NULL, flags);
 }
+
+void AmqpClient::basicAck (uint64_t deliveryTag) {
+    amqp_basic_ack(this->connection, 1, deliveryTag , 0);
+}

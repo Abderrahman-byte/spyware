@@ -82,6 +82,7 @@ std::string getRpcAuthenticationReply (AmqpClient &amqpClient, std::string queue
         debug("Received non Normal response", LEVEL_WARN);
     } else {
         std::string body((char *)envelope.message.body.bytes, envelope.message.body.len);
+        amqpClient.basicAck(envelope.delivery_tag);
 
         return body;
     }
