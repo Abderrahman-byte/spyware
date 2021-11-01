@@ -13,10 +13,11 @@ Create a spyware that listen to keystrokes and send them to the server.
 - [x] Authentication
 - [x] Add Keylogger
 - [x] Add spyware as service
-- [ ] Add screen shot
+- [x] Add screen shot
 - [ ] Add Multi channel support for amqp client
 - [ ] Add Multi Threading
 - [ ] Geo location traker
+- [ ] Add Anti Virtual machine 
 
 ## Authors :
 
