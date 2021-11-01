@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+    <file name="vcruntime140_1d.dll" />
+    <file name="vcruntime140d.dll" />
+    <file name="msvcp140d.dll" />
+    <file name="ucrtbased.dll" />
     <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
         <security>
             <requestedPrivileges>
