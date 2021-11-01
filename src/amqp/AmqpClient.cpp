@@ -142,6 +142,36 @@ bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, std
     return true;
 }
 
+bool AmqpClient::basicPublish (std::string exchange, std::string routingKey, char* data, int dataLen, amqp_basic_properties_t* props) {
+    this->checkIfAlive();
+
+    char *body;
+    amqp_bytes_t bodyBytes;
+    amqp_bytes_t exchangeBytes = amqp_empty_bytes;
+    amqp_bytes_t routingKeyBytes = amqp_empty_bytes;
+
+    body = (char *)malloc(dataLen + 1);
+    memcpy(body, data, dataLen);
+    body[dataLen] = '\0';
+    bodyBytes = amqp_cstring_bytes(body);
+
+    if (exchange.length() > 0) exchangeBytes = amqp_cstring_bytes(exchange.c_str());
+    if (routingKey.length() > 0) routingKeyBytes = amqp_cstring_bytes(routingKey.c_str());
+
+    std::lock_guard<std::mutex> lock(this->mtx); // Lock mutex for thread safety
+
+    int status = amqp_basic_publish(this->connection, 1, exchangeBytes, routingKeyBytes, 0, 0, props, bodyBytes);
+
+    free(body);
+    
+    if (status < 0) {
+        debug("Publishing message to " + exchange, LEVEL_ERROR);
+        return false;
+    }
+
+    return true;
+}
+
 void AmqpClient::checkIfAlive () {
     if (!this->alive) throw "Amqp Connection is not alive";
 }
