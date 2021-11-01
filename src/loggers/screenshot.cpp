@@ -72,7 +72,7 @@ void TakeScreenShot::operator()(unsigned interval) {
             lastSend = now;
             ScreenShot();            
 
-            std::cout << "[*] took screen shot now " << std::endl; 
+            std::cout << "[*] took screen shot in : " << (getTimestamp() - now) << " ms" << std::endl; 
         }
     }
 }
