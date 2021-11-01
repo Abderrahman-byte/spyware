@@ -15,6 +15,7 @@ extern nlohmann::json getInfo ();
 extern bool vectorContainsString (std::vector<std::string>, std::string);
 extern nlohmann::json getRmqConfig();
 extern unsigned long long getTimestamp();
+extern void writeBytesToFile(std::string, char*, unsigned long);
 
 #if defined(_WIN32) || defined(_WIN64)
 extern void initWSAStartup () ;

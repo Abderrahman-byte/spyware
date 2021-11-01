@@ -254,3 +254,19 @@ unsigned long long getTimestamp () {
 
     return nowMs.count();
 }
+
+void writeBytesToFile(std::string filename, char* data, unsigned long len) {
+#if defined(_WIN64) || defined(_WIN32)
+    DWORD fileWritten;
+    HANDLE hFile = CreateFile(filename.c_str(),
+        GENERIC_WRITE,
+        FILE_SHARE_WRITE,
+        NULL,
+        CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL);
+
+    WriteFile(hFile, data, len, &fileWritten, NULL);
+    CloseHandle(hFile);
+#endif
+}
